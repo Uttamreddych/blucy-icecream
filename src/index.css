@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary-blue: #0868E8;
+  --color-navy-blue: #0739A8;
+  --color-sky-blue: #12B9F4;
+  --color-bright-pink: #FF1689;
+  --color-soft-pink: #FFF0F7;
+  --color-ice-blue: #EAF7FF;
+  --color-white: #FFFFFF;
+  --color-body-text: #102C70;
+  --color-muted-text: #56749E;
+  
+  --font-heading: 'Fredoka', cursive, system-ui, sans-serif;
+  --font-body: 'Poppins', 'Nunito Sans', system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    color: var(--color-body-text);
+    background-color: #FFFFFF;
+    font-family: var(--font-body);
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    color: var(--color-navy-blue);
+    line-height: 1.2;
+  }
+}
+
+@layer components {
+  .btn-pill {
+    @apply inline-flex items-center justify-center font-medium rounded-full px-6 py-3 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-opacity-50 active:scale-95;
+  }
+
+  .btn-primary {
+    @apply btn-pill bg-blucy-blue hover:bg-blucy-navy text-white shadow-md hover:shadow-lg hover:-translate-y-0.5 focus:ring-blucy-blue;
+  }
+
+  .btn-pink {
+    @apply btn-pill bg-blucy-pink hover:bg-[#e00c76] text-white shadow-brand-pink hover:shadow-lg hover:-translate-y-0.5 focus:ring-blucy-pink;
+  }
+
+  .btn-secondary {
+    @apply btn-pill bg-white hover:bg-blucy-ice text-blucy-navy border-2 border-blucy-blue/20 hover:border-blucy-blue shadow-sm hover:shadow-md hover:-translate-y-0.5 focus:ring-blucy-blue;
+  }
+
+  .btn-outline-white {
+    @apply btn-pill bg-transparent hover:bg-white/15 text-white border-2 border-white/80 hover:border-white shadow-sm focus:ring-white;
+  }
+
+  .blucy-card {
+    @apply bg-white rounded-3xl border border-blucy-sky/20 shadow-brand transition-all duration-300 hover:shadow-card-hover hover:-translate-y-1 overflow-hidden;
+  }
+
+  .blucy-badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold tracking-wide uppercase;
+  }
+
+  .badge-pink {
+    @apply blucy-badge bg-blucy-softpink text-blucy-pink border border-blucy-pink/20;
+  }
+
+  .badge-blue {
+    @apply blucy-badge bg-blucy-ice text-blucy-blue border border-blucy-blue/20;
+  }
+
+  .text-gradient-blue {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blucy-navy via-blucy-blue to-blucy-sky;
+  }
+
+  .text-gradient-pink {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blucy-pink to-[#ff59ab];
+  }
+
+  .ice-mesh-bg {
+    background: radial-gradient(circle at 10% 20%, rgba(18, 185, 244, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(255, 22, 137, 0.06) 0%, transparent 40%),
+                #FFFFFF;
+  }
+
+  .ice-pattern-bg {
+    background-color: #FAFDFF;
+    background-image: radial-gradient(#12B9F4 0.65px, transparent 0.65px), radial-gradient(#FF1689 0.65px, #FAFDFF 0.65px);
+    background-size: 26px 26px;
+    background-position: 0 0, 13px 13px;
+    background-opacity: 0.03;
+  }
+}
+
+/* Accessibility & Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
