@@ -55,7 +55,7 @@ export const Navbar: React.FC = () => {
             <img
               src="/images/brand/blucy_logo.png"
               alt="Blucy Ice Creamery Logo"
-              className="h-11 sm:h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+              className="h-12 sm:h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-105 drop-shadow-sm"
             />
           </Link>
 

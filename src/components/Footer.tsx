@@ -40,7 +40,7 @@ export const Footer: React.FC = () => {
               <img
                 src="/images/brand/blucy_logo.png"
                 alt="Blucy Ice Creamery"
-                className="h-16 w-auto object-contain"
+                className="h-16 sm:h-20 w-auto object-contain drop-shadow-sm"
               />
             </Link>
             <p className="text-blucy-navy font-medium text-sm leading-relaxed max-w-sm">
