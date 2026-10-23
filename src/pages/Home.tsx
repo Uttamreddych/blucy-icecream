@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { SectionHeading } from '../components/SectionHeading';
 import { PRODUCT_CATEGORIES } from '../data/products';
@@ -14,7 +14,9 @@ import {
   Zap,
   Eye,
   Target,
-  Truck
+  Truck,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 
 export const Home: React.FC = () => {
@@ -59,6 +61,101 @@ export const Home: React.FC = () => {
     { name: 'Kesar Pista Kulfi', category: 'Traditional Kulfi', price: '₹79', tag: 'Heritage' },
     { name: 'HM Classic Burger', category: 'Café Quick Bites', price: '₹65', tag: 'Value Hit' },
   ];
+
+  const heroSlides = [
+    {
+      image: '/images/products/waffle_hero_plate.png',
+      tag: 'Signature Treat',
+      title: 'Crisp Waffles & Pure Dairy Scoops',
+      subtitle: 'Warm Belgian waffles paired with rich artisan ice cream',
+      priceBadge: 'Waffles from ₹149',
+      link: '/products?category=waffles',
+    },
+    {
+      image: '/images/products/ice_cream_scoops_cup.png',
+      tag: '100% Pure Dairy',
+      title: 'Artisanal Ice Creams & Exotic Flavours',
+      subtitle: 'Shahi Paan, Roasted Almond, Wild Blueberry & more',
+      priceBadge: 'Scoops from ₹49',
+      link: '/products?category=ice-creams',
+    },
+    {
+      image: '/images/products/softy_cones.png',
+      tag: 'Freshly Swirled',
+      title: 'Crunchy Choco Dip Softy Cones',
+      subtitle: 'Classic vanilla, strawberry, chocolate & nutty dips',
+      priceBadge: 'Cones from ₹49',
+      link: '/products?category=softy-cones',
+    },
+    {
+      image: '/images/products/sundae_bowl.png',
+      tag: 'Chef Signature',
+      title: 'Velvety Handcrafted Sundaes',
+      subtitle: 'California, Indian Tradition & Swiss Chocolate sundaes',
+      priceBadge: 'Sundaes from ₹249',
+      link: '/products?category=sundaes-desserts',
+    },
+    {
+      image: '/images/products/cafe_frappes.png',
+      tag: 'Frosted Sips',
+      title: 'Caramel Blizzard & Java Chip Frappes',
+      subtitle: 'Thick, frosty iced coffees and indulgent chocolate frappes',
+      priceBadge: 'Frappes from ₹169',
+      link: '/products?category=milkshakes-beverages',
+    },
+    {
+      image: '/images/products/kulfies_platter.png',
+      tag: 'Desi Indulgence',
+      title: 'Traditional Malai & Kesar Pista Kulfis',
+      subtitle: 'Rich, authentic regional treats on sticks and platters',
+      priceBadge: 'Kulfis from ₹69',
+      link: '/products?category=kulfies',
+    },
+    {
+      image: '/images/franchise/food_truck_main.png',
+      tag: 'Franchise Growth',
+      title: 'Branded Mobile Food Trucks',
+      subtitle: 'High-visibility rolling cafés for city events and hotspots',
+      priceBadge: 'Turnkey Setup',
+      link: '/franchise',
+    },
+  ];
+
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev === 0 ? heroSlides.length - 1 : prev - 1));
+  };
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+  };
+
+  useEffect(() => {
+    if (isPaused) return;
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 3500);
+    return () => clearInterval(interval);
+  }, [isPaused, heroSlides.length]);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStart === null) return;
+    const touchEnd = e.changedTouches[0].clientX;
+    const diff = touchStart - touchEnd;
+    if (diff > 50) {
+      nextSlide();
+    } else if (diff < -50) {
+      prevSlide();
+    }
+    setTouchStart(null);
+  };
 
   return (
     <div className="pt-20">
@@ -121,23 +218,101 @@ export const Home: React.FC = () => {
               </div>
             </div>
 
-            {/* Right Hero Visual Collage */}
+            {/* Right Hero Visual Collage / Auto-Scrolling Product Showcase */}
             <div className="lg:col-span-5 relative">
               <div className="relative mx-auto max-w-md lg:max-w-none">
-                {/* Main Hero Card */}
-                <div className="relative z-10 rounded-3xl overflow-hidden shadow-card-hover border-4 border-white bg-white">
-                  <img
-                    src="/images/products/waffle_hero_plate.png"
-                    alt="Blucy Gourmet Waffle Plate with Ice Cream"
-                    className="w-full h-auto object-cover hover:scale-105 transition-transform duration-700"
-                  />
-                  <div className="p-4 bg-gradient-to-t from-blucy-navy/90 to-transparent text-white absolute bottom-0 left-0 right-0">
-                    <span className="text-xs font-semibold text-blucy-sky uppercase tracking-wide">Signature Treat</span>
-                    <h3 className="font-heading font-bold text-lg text-white">Crisp Waffles & Pure Dairy Scoops</h3>
+                {/* Main Hero Card Carousel */}
+                <div
+                  className="relative z-10 rounded-3xl overflow-hidden shadow-card-hover border-4 border-white bg-white group select-none"
+                  onMouseEnter={() => setIsPaused(true)}
+                  onMouseLeave={() => setIsPaused(false)}
+                  onTouchStart={handleTouchStart}
+                  onTouchEnd={handleTouchEnd}
+                >
+                  {/* Sliding Container */}
+                  <div
+                    className="flex transition-transform duration-700 ease-in-out"
+                    style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+                  >
+                    {heroSlides.map((slide, idx) => (
+                      <Link
+                        key={idx}
+                        to={slide.link}
+                        className="w-full shrink-0 relative aspect-[4/3] sm:aspect-[16/11] bg-gradient-to-tr from-blucy-ice via-white to-blucy-softpink/40 flex items-center justify-center overflow-hidden block"
+                        title={slide.title}
+                      >
+                        <img
+                          src={slide.image}
+                          alt={slide.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                        />
+                        {/* Gradient Overlay & Captions */}
+                        <div className="p-4 sm:p-5 bg-gradient-to-t from-blucy-navy/95 via-blucy-navy/65 to-transparent text-white absolute bottom-0 left-0 right-0">
+                          <div className="flex items-center justify-between gap-2 mb-1">
+                            <span className="text-[11px] font-bold text-blucy-sky uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-white/15 backdrop-blur-sm">
+                              {slide.tag}
+                            </span>
+                            <span className="text-[11px] font-semibold text-white/70">
+                              {idx + 1} / {heroSlides.length}
+                            </span>
+                          </div>
+                          <h3 className="font-heading font-bold text-lg sm:text-xl text-white drop-shadow-sm leading-snug">
+                            {slide.title}
+                          </h3>
+                          <p className="text-xs text-white/80 font-normal line-clamp-1 mt-0.5">
+                            {slide.subtitle}
+                          </p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+
+                  {/* Left Arrow Button */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      prevSlide();
+                    }}
+                    className="absolute left-2.5 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 hover:bg-white text-blucy-navy flex items-center justify-center shadow-lg backdrop-blur-sm opacity-80 sm:opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20 focus:outline-none"
+                    aria-label="Previous slide"
+                  >
+                    <ChevronLeft className="w-5 h-5 text-blucy-navy" />
+                  </button>
+
+                  {/* Right Arrow Button */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      nextSlide();
+                    }}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 hover:bg-white text-blucy-navy flex items-center justify-center shadow-lg backdrop-blur-sm opacity-80 sm:opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-20 focus:outline-none"
+                    aria-label="Next slide"
+                  >
+                    <ChevronRight className="w-5 h-5 text-blucy-navy" />
+                  </button>
+
+                  {/* Slide Indicators / Pill Dots */}
+                  <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 bg-blucy-navy/60 backdrop-blur-md px-2.5 py-1 rounded-full">
+                    {heroSlides.map((_, dotIdx) => (
+                      <button
+                        key={dotIdx}
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setCurrentSlide(dotIdx);
+                        }}
+                        className={`h-1.5 transition-all duration-300 rounded-full ${
+                          currentSlide === dotIdx ? 'w-5 bg-blucy-pink' : 'w-1.5 bg-white/50 hover:bg-white'
+                        }`}
+                        aria-label={`Go to slide ${dotIdx + 1}`}
+                      />
+                    ))}
                   </div>
                 </div>
 
-                {/* Floating Badge 1: Food Truck */}
+                {/* Floating Badge 1: Multi-Format Mobility */}
                 <div className="absolute -bottom-6 -left-6 z-20 bg-white p-3 rounded-2xl shadow-xl border border-blucy-sky/20 flex items-center gap-3 animate-float hidden sm:flex">
                   <div className="w-12 h-12 rounded-xl bg-blucy-ice flex items-center justify-center text-blucy-blue shrink-0">
                     <Truck className="w-6 h-6" />
@@ -148,10 +323,10 @@ export const Home: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Floating Badge 2: Price Point */}
-                <div className="absolute -top-4 -right-4 z-20 bg-blucy-pink text-white px-4 py-2.5 rounded-2xl shadow-brand-pink text-xs font-heading font-bold transform rotate-3 flex items-center gap-1.5">
+                {/* Floating Badge 2: Dynamic Live Price Point */}
+                <div className="absolute -top-4 -right-4 z-20 bg-blucy-pink text-white px-4 py-2.5 rounded-2xl shadow-brand-pink text-xs font-heading font-bold transform rotate-3 flex items-center gap-1.5 transition-all duration-300">
                   <Sparkles className="w-4 h-4 fill-white" />
-                  <span>Scoops Starting @ ₹49/-</span>
+                  <span>{heroSlides[currentSlide].priceBadge}</span>
                 </div>
               </div>
             </div>
